@@ -52,34 +52,36 @@ var getFeed = (feed, items) => {
 }
 
 app.get('/', (request, response) => {
-    var url_parts = url.parse(request.url, true);
-    var query = url_parts.query;
+    // var url_parts = url.parse(request.url, true);
+    // var query = url_parts.query;
 
-    if (!query.subreddit) {
-        response.status(422);
-        response.send('subreddit query param required')
-    }
+    // if (!query.subreddit) {
+    //     response.status(422);
+    //     response.send('subreddit query param required')
+    // }
 
-    const template = `https://www.reddit.com/r/${query.subreddit}/.json?limit=100`;
+    // const template = `https://www.reddit.com/r/${query.subreddit}/.json?limit=100`;
 
-    //var items = json.data.children;
-    var filters = query.filters && query.filters.split('|').map(i => {
-        const result = i.split(':');
-        return {
-            [result[0]]: result[1]
-        };
-    });
+    // //var items = json.data.children;
+    // var filters = query.filters && query.filters.split('|').map(i => {
+    //     const result = i.split(':');
+    //     return {
+    //         [result[0]]: result[1]
+    //     };
+    // });
 
-    const feed = new Feed({
-        title: 'Feed Title',
-        description: 'This is my personal feed!'
-    });
-    //return; 
-    fetch(template).then(res => res.json())
-        .catch(error => console.error('Error:', error))
-        .then(json => json.data.children.map(i => i.data).filter(applyFilters(filters)))
-        .then(filtered => { getFeed(feed, filtered); return feed.json1(); })
-        .then(json => response.send(json));
+    // const feed = new Feed({
+    //     title: 'Feed Title',
+    //     description: 'This is my personal feed!'
+    // });
+    // //return; 
+    // fetch(template).then(res => res.json())
+    //     .catch(error => console.error('Error:', error))
+    //     .then(json => json.data.children.map(i => i.data).filter(applyFilters(filters)))
+    //     .then(filtered => { getFeed(feed, filtered); return feed.json1(); })
+    //     .then(json => response.send(json));
+
+    response.send("hello world");
 });
 
 const port = process.env.PORT || 3000;
