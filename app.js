@@ -70,11 +70,15 @@ app.get('/feed.json', (request, response) => {
         };
     });
 
+    const currentUrl = request.protocol + '://' + request.get('host') + request.originalUrl;
     const feed = new Feed({
         title: 'Feed Title',
         description: 'This is my personal feed!',
-        home_page_url: 'www.google.com',
-        feed_url: request.protocol + '://' + request.get('host') + request.originalUrl
+        link: currentUrl,
+        feedLinks: {
+            json: currentUrl,
+            rss: currentUrl
+        }
     });
     //return; 
     fetch(template).then(res => res.json())
