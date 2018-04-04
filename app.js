@@ -1,9 +1,10 @@
 const express = require('express')
 const fetch = require('node-fetch')
 const url = require('url');
-const Feed = require('feed');
 
 const app = express()
+
+const REDDIT_URL = 'https://www.reddit.com';
 
 /*
     2 types of filter: 
@@ -40,16 +41,20 @@ var applyFilters = filters => item => {
     return true;
 }
 
-var getFeed = (feed, items) => {
-    items.forEach(item => {
-        feed.addItem({
-            title: item.title,
+var mapItems = (feed, items) => {
+    feed.items = items.map(item => {
+        return {
             id: item.url,
-            link: item.url,
-            content: item.selftext_html
-        })
+            link: REDDIT_URL + item.permalink,
+            external_url: item.url,
+            title: item.title,
+            content_text: item.selftext,
+            content_html: item.selftext_html,
+            image: item.thumbnail.indexOf('http') !== 0 ? null : item.thumbnail
+        };
     });
-}
+    return feed;
+};
 
 app.get('/feed.json', (request, response) => {
     var url_parts = url.parse(request.url, true);
@@ -71,21 +76,19 @@ app.get('/feed.json', (request, response) => {
     });
 
     const currentUrl = request.protocol + '://' + request.get('host') + request.originalUrl;
-    const feed = new Feed({
-        title: 'Feed Title',
-        description: 'This is my personal feed!',
-        link: currentUrl,
-        feedLinks: {
-            json: currentUrl,
-            rss: currentUrl
-        }
-    });
+    const feed = {
+        version: 'https://jsonfeed.org/version/1',
+        title: 'Reddit JSON RSS feed',
+        home_page_url: currentUrl,
+        feed_url: currentUrl,
+        items: []
+    };
     response.setHeader('Content-Type', 'application/json');
 
     fetch(template).then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(json => json.data.children.map(i => i.data).filter(applyFilters(filters)))
-        .then(filtered => { getFeed(feed, filtered); return feed.json1(); })
+        .then(filtered => mapItems(feed, filtered))
         .then(json => response.send(json));
 });
 
