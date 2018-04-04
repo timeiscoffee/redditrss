@@ -51,7 +51,7 @@ var getFeed = (feed, items) => {
     });
 }
 
-app.get('/', (request, response) => {
+app.get('/.json', (request, response) => {
     var url_parts = url.parse(request.url, true);
     var query = url_parts.query;
 
