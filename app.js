@@ -51,7 +51,7 @@ var getFeed = (feed, items) => {
     });
 }
 
-app.get('/.json', (request, response) => {
+app.get('/feed.json', (request, response) => {
     var url_parts = url.parse(request.url, true);
     var query = url_parts.query;
 
@@ -72,7 +72,9 @@ app.get('/.json', (request, response) => {
 
     const feed = new Feed({
         title: 'Feed Title',
-        description: 'This is my personal feed!'
+        description: 'This is my personal feed!',
+        home_page_url: 'www.google.com',
+        feed_url: request.protocol + '://' + request.get('host') + request.originalUrl
     });
     //return; 
     fetch(template).then(res => res.json())
