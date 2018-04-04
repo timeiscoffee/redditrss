@@ -80,7 +80,8 @@ app.get('/feed.json', (request, response) => {
             rss: currentUrl
         }
     });
-    //return; 
+    response.setHeader('Content-Type', 'application/json');
+
     fetch(template).then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(json => json.data.children.map(i => i.data).filter(applyFilters(filters)))
